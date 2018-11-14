@@ -45,20 +45,33 @@ const Timer = function () {
     }
 
     function _display_time_left(seconds) {
-        const minutes = Math.floor(seconds / 60);
+        let days;
+
+        if (Math.floor(seconds/86400) >= 1) {
+            days = Math.floor(seconds / 86400) + "d ";
+        }else {
+            days = '';
+        }
+
+        const hours = Math.floor(seconds / 3600) % 24;
+        const minutes = Math.floor(seconds / 60) % 60;
         const reminder_seconds = seconds % 60;
         
-        const display = `${minutes}:${reminder_seconds < 10 ? "0" : ""}${reminder_seconds}`;
+        const display = `${days}${hours < 10 ? "0" : ""}${hours}:${minutes < 10 ? "0" : ""}${minutes}:${reminder_seconds < 10 ? "0" : ""}${reminder_seconds}`;
         timer_container.textContent = display;
         document.title = display;
     }
 
     function _display_end_time(timestamp) {
         const end_date = new Date(timestamp);
+        const year = end_date.getFullYear();
+        const month = end_date.toLocaleString("ru", {month: "long"});
+        const days = ['Воскресенье', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятниица', 'Субота'];
+        const day = days[end_date.getDay()];
         const hour = end_date.getHours();
         const minutes = end_date.getMinutes();
 
-        const display = `Be back at ${hour}:${minutes < 10 ? "0" : ""}${minutes}`;
+        const display = `Be back at ${day}, ${month} ${end_date.getDate()}, ${year}, ${hour}:${minutes < 10 ? "0" : ""}${minutes} `;
         end_time_container.textContent = display;
     }
 
@@ -71,6 +84,10 @@ const Timer = function () {
 
 const btns = document.querySelectorAll("[data-time]");
 const reset_btn = document.querySelector(".stop__button");
+const input_field = document.querySelector("form#custom");
+
+
+
 
 const my_timer1 = Timer().init({
     timer_container: ".display__time-left",
@@ -82,6 +99,15 @@ function onClickHandler(e) {
     my_timer1.start(seconds);
 }
 
+input_field.addEventListener("submit", onSubmitHandler);
+
+function onSubmitHandler(e) {
+    e.preventDefault();
+    let input_value = input_field.elements["minutes"].value
+    let seconds;
+    !isNaN(input_value) ? seconds = Number(input_value) * 60 : alert("Введите количество минут");
+    my_timer1.start(seconds);
+}
 
 btns.forEach(btn => btn.addEventListener("click", onClickHandler));
 reset_btn.addEventListener("click", my_timer1.stop);
