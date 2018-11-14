@@ -1,0 +1,6 @@
+# ignore Node
+node_modules/
+/Task
+Питання.docx
+gulpfile.js
+package.json
