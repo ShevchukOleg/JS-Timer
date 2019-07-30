@@ -107,6 +107,7 @@ function onSubmitHandler(e) {
     let seconds;
     !isNaN(input_value) ? seconds = Number(input_value) * 60 : alert("Введите количество минут");
     my_timer1.start(seconds);
+    setTimeout (input_field.reset(), 1);
 }
 
 btns.forEach(btn => btn.addEventListener("click", onClickHandler));
